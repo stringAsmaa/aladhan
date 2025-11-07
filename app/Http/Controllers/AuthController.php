@@ -99,4 +99,12 @@ public function registerNormal(RegisterNormalRequest $request)
 
         return response()->json($token);
     }
+
+    public function updateProfile(Request $request)
+{
+    $result = $this->authService->updateProfile($request);
+
+    return response()->json($result, 200);
+}
+
 }

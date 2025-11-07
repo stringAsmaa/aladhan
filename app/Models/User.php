@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\ZekrCategory;
 use Illuminate\Notifications\Notifiable;
-use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject; // <--- هنا
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject; // <--- هنا
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -36,4 +37,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return []; // يمكنك إضافة أي claim مخصص هنا
     }
+
+    public function favoriteAzkar()
+{
+    return $this->belongsToMany(ZekrCategory::class, 'favorite_azkar')->withTimestamps();
+}
+
 }

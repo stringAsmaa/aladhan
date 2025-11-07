@@ -18,4 +18,14 @@ class LocationController extends Controller
  return  $this->service->getCity( $user->latitude, $user->longitude);
 
     }
+    public function nearestMosque(Request $request)
+{
+
+     $user=Auth::user();
+
+   return$this->service->findNearestMosque( $user->latitude, $user->longitude);
+
+
+}
+
 }

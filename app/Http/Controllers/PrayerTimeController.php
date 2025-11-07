@@ -10,13 +10,24 @@ class PrayerTimeController extends Controller
 {
     public function __construct(protected PrayerTimeService $service)
     {
-      $this->service=$service;
+        $this->service = $service;
     }
     public function getPrayerTimes(Request $request)
     {
+        $request->validate([
+            'method' => 'required|in:2,3,4,5',
+        ]);
+        /*
+أم القرى (السعودية) → method = 4
 
+الجمعية الإسلامية لأمريكا الشمالية (ISNA) → method = 2
+
+رابطة العالم الإسلامي (Muslim World League) → method = 3
+
+الهيئة العامة المصرية للمساحة (Egyptian General Authority of Survey) → method = 5
+*/
         $user = Auth::user();
-        $timings = $this->service->getPrayerTimes($user->latitude, $user->longitude);
+        $timings = $this->service->getPrayerTimes($user->latitude, $user->longitude, $request->method);
 
         if (! $timings) {
             return response()->json([
@@ -27,5 +38,11 @@ class PrayerTimeController extends Controller
         return response()->json([
             'timings' => $timings
         ]);
+    }
+
+    public function getQiblaDirection(Request $request)
+    {
+        $user = Auth::user();
+        return $this->service->getQiblaDirection($user->latitude, $user->longitude);
     }
 }
