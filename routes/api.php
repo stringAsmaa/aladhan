@@ -33,6 +33,9 @@ Route::get('/get/nearestMosque', [LocationController::class, 'nearestMosque'])->
 
 Route::get('/getPrayerTimes', [PrayerTimeController::class, 'getPrayerTimes'])->middleware('auth:api');
 Route::get('/getQiblaDirection', [PrayerTimeController::class, 'getQiblaDirection'])->middleware('auth:api');
+Route::get('/getNextPrayer', [PrayerTimeController::class, 'getNextPrayer'])->middleware('auth:api');
+
+
 Route::get('/categories', [ZekrCategoryController::class, 'getCategories']);
 Route::get('/by-category', [ZekrController::class, 'getAzkarByCategory']);
 

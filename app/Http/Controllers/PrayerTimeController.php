@@ -45,4 +45,28 @@ class PrayerTimeController extends Controller
         $user = Auth::user();
         return $this->service->getQiblaDirection($user->latitude, $user->longitude);
     }
+
+
+    public function getNextPrayer(Request $request)
+    {
+        $request->validate([
+            'method' => 'required|in:2,3,4,5',
+        ]);
+
+        $user = Auth::user();
+
+        $nextPrayer = $this->service->getNextPrayer(
+            $user->latitude,
+            $user->longitude,
+            $request->method,
+            $user->timezone ?? 'Asia/Damascus'
+        );
+
+        if (! $nextPrayer) {
+            return response()->json(['error' => 'تعذّر تحديد الصلاة القادمة'], 500);
+        }
+
+        return response()->json(['next_prayer' => $nextPrayer]);
+    }
+
 }
