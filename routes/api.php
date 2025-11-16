@@ -54,4 +54,6 @@ Route::get('/hijri/calendar', [HijriController::class, 'calendar']);
 Route::middleware('auth:api')->group(function () {
 Route::patch('/markZekrAsRead', [UserZekrLogController::class, 'markZekrAsRead']);
 Route::get('/get_staticsit_zekr', [UserZekrLogController::class, 'get_staticsit_zekr']);
+Route::get('/get_category_read', [UserZekrLogController::class, 'get_category_read']);
+
 });

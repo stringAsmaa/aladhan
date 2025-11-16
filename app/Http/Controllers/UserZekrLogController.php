@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Services\UserZekrLogService;
+use Carbon\Carbon;
+use App\Models\UserZekrLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Services\UserZekrLogService;
 
 class UserZekrLogController extends Controller
 {
@@ -23,6 +26,12 @@ class UserZekrLogController extends Controller
 public function get_staticsit_zekr()
 {
    return  $this->service->get_staticsit_zekr();
+
+}
+
+public function get_category_read(){
+    $id=Auth::id();
+    return  UserZekrLog::where('user_id',$id)->where('date',Carbon::today())->get();
 
 }
 

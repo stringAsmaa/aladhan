@@ -165,6 +165,7 @@ class AuthService implements AuthInterface
             // تحضير بيانات المستخدم
             $userData = [
                 'name'   => $user->name,
+                'emial'   => $user->email,
                 'avatar' => $user->avatar ? asset('storage/' . $user->avatar) : null,
             ];
 
@@ -269,35 +270,34 @@ class AuthService implements AuthInterface
     }
 
     public function updateProfile(Request $request)
-{
-    $user = auth()->user();
+    {
+        $user = auth()->user();
 
-    if (!$user) {
+        if (!$user) {
+            return [
+                'success' => false,
+                'message' => 'المستخدم غير مصدق',
+            ];
+        }
+        $validated = $request->validate([
+            'name'   => 'nullable|string|max:255',
+            'email'  => 'nullable|email|unique:users,email,' . $user->id,
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+        if ($request->hasFile('avatar')) {
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $validated['avatar'] = $path;
+        }
+        $user->update($validated);
+
         return [
-            'success' => false,
-            'message' => 'المستخدم غير مصدق',
+            'success' => true,
+            'message' => 'تم تحديث الملف الشخصي بنجاح',
+            'user' => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'avatar' => $user->avatar ? asset('storage/' . $user->avatar) : null,
+            ],
         ];
     }
-    $validated = $request->validate([
-        'name'   => 'nullable|string|max:255',
-        'email'  => 'nullable|email|unique:users,email,' . $user->id,
-        'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    ]);
-    if ($request->hasFile('avatar')) {
-        $path = $request->file('avatar')->store('avatars', 'public');
-        $validated['avatar'] = $path;
-    }
-    $user->update($validated);
-
-    return [
-        'success' => true,
-        'message' => 'تم تحديث الملف الشخصي بنجاح',
-        'user' => [
-            'name' => $user->name,
-            'email' => $user->email,
-            'avatar' => $user->avatar ? asset('storage/' . $user->avatar) : null,
-        ],
-    ];
-}
-
 }
