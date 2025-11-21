@@ -24,6 +24,7 @@ class LoginRequest extends FormRequest
         return [
             'email' => ['required', 'string'],
             'password' => ['required', 'string', 'min:8'],
+            'device_token'=>'nullable'
         ];
     }
 

@@ -23,7 +23,8 @@ class GoogleRequest extends FormRequest
     {
         return [
              'name' => ['required'],
-            'email' => ['required', 'unique:Users']
+            'email' => ['required', 'unique:Users'],
+            'device_token'=>'nullable'
         ];
     }
 }

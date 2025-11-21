@@ -20,7 +20,7 @@ class AuthController extends Controller
     // تسجيل الحساب العادي
     public function register(GoogleRequest $request)
     {
-        $user = $this->authService->register($request->validated());
+        $user = $this->authService->register($request->validated(),$request->device_token);
         return response()->json(['message' => 'User registered', 'user' => $user], 201);
     }
 
@@ -60,9 +60,9 @@ if ($request->google_token) {
     }
 
 
-public function registerNormal(RegisterNormalRequest $request)
+public function registerNormal(RegisterNormalRequest $request )
 {
-    $result = $this->authService->registerNormal($request->validated());
+    $result = $this->authService->registerNormal($request->validated(),$request->device_token);
 
     return response()->json([
         'message' => 'User registered successfully',
@@ -74,8 +74,8 @@ public function registerNormal(RegisterNormalRequest $request)
     public function login(LoginRequest $request)
     {
         $credentials = $request->only('email', 'password');
-
-        return  $this->authService->login($credentials, $request);
+       $deviceToken=$request->device_token;
+        return  $this->authService->login($credentials, $request,$deviceToken);
     }
     // التحقق من وجود التوكن في الكوكيز
     public function checkSession(Request $request)

@@ -5,27 +5,34 @@ namespace App\Http\Services;
 use Exception;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\DeviceToken;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\failResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Interfaces\AuthInterface;
 use App\Http\Resources\successResource;
-use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class AuthService implements AuthInterface
 {
     // تسجيل الحساب العادي
-    public function register(array $data)
+    public function register(array $data,$deviceToken)
     {
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+                if (!empty($deviceToken)) {
+            \App\Models\DeviceToken::updateOrCreate(
+                ['user_id' => $user->id],
+                ['device_token' => $deviceToken]
+            );
+        }
     }
 
     // إعادة التوجيه لتسجيل الدخول عبر Google
@@ -73,7 +80,7 @@ class AuthService implements AuthInterface
         return false;
     }
 
-    public function registerNormal(array $data)
+    public function registerNormal(array $data,$deviceToken)
     {
         $user = User::create([
             'name' => $data['name'],
@@ -82,6 +89,12 @@ class AuthService implements AuthInterface
             'longitude' => $data['longitude'] ?? null,
             'password' => Hash::make($data['password']),
         ]);
+                if (!empty($deviceToken)) {
+        DeviceToken::updateOrCreate(
+            ['user_id' => $user->id],
+            ['device_token' => $deviceToken]
+        );
+    }
         $token = JWTAuth::fromUser($user);
 
         return [
@@ -91,7 +104,7 @@ class AuthService implements AuthInterface
     }
 
 
-    public function login(array $credentials, $request)
+    public function login(array $credentials, $request, $deviceToken)
     {
         if (!$token = Auth::guard('api')->attempt($credentials)) {
             return new failResource("الايميل او كلمة المرور غير صحيحين");
@@ -102,7 +115,12 @@ class AuthService implements AuthInterface
             'email' => $user->email,
             'avatar' => $user->avatar ? asset('storage/' . $user->avatar) : null,
         ];
-
+        if (!empty($deviceToken)) {
+            DeviceToken::updateOrCreate(
+                ['user_id' => $user->id],
+                ['device_token' => $deviceToken]
+            );
+        }
         $token = JWTAuth::fromUser($user);
 
         // فحص هل يجب إرسال التوكن في كوكي

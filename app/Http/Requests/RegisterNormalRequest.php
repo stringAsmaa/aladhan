@@ -26,7 +26,8 @@ class RegisterNormalRequest extends FormRequest
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'latitude'=>'nullable',
-            'longitude'=>'nullable'
+            'longitude'=>'nullable',
+            'device_token'=>'nullable'
         ];
     }
 }
