@@ -23,7 +23,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/refresh', 'refresh');
     Route::post('/logout', 'logout');
     Route::get('/check-session', 'checkSession');
-    Route::get('auth/google/redirect', 'redirect');
+    // Route::get('auth/google/redirect', 'redirect');
     Route::get('auth/google/callback', 'callBack');
     Route::post('auth/google/logout', 'logout_google');
 });

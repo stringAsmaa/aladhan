@@ -36,13 +36,19 @@ class AuthService implements AuthInterface
     }
 
     // إعادة التوجيه لتسجيل الدخول عبر Google
-    public function redirect()
-    {
-        return Socialite::driver('google')->stateless()->redirect();
-    }
+ public function redirect( $request)
+{
+    $frontendUrl = $request->getSchemeAndHttpHost(); // http://127.0.0.1:8000
+    $state = base64_encode($frontendUrl);
 
-    // معالجة callback من Google
-    public function callBack()
+return Socialite::driver('google')
+    ->with(['state' => $state])
+    ->redirect();
+
+}
+
+
+    public function callBack($request)
     {
         $googleUser = Socialite::driver('google')->stateless()->user();
         $email = $googleUser->email;
@@ -55,14 +61,15 @@ class AuthService implements AuthInterface
             ]
         );
 
-        $remember_token = Hash::make(Str::random(60));
-        session(['remember_token' => $remember_token]);
-
         $jwt = JWTAuth::fromUser($user);
+
+        // استرجاع رابط الفرونت من state وفك تشفيره
+        $frontendUrl = base64_decode($request->get('state', config('app.frontend_url')));
 
         return [
             'user' => $user,
             'token' => $jwt,
+            'frontend' => $frontendUrl,
         ];
     }
 

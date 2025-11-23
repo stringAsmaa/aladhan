@@ -25,22 +25,27 @@ class AuthController extends Controller
     }
 
     // إعادة التوجيه لتسجيل الدخول عبر Google
-    public function redirect()
-    {
-        return $this->authService->redirect();
-    }
-
-    // callback بعد تسجيل الدخول عبر Google
-public function callBack()
+public function redirect(Request $request)
 {
-    $result = $this->authService->callBack();
+    // استرجاع الفرونت من query param أو Origin header
 
-    return response()->json([
-        'message' => 'Login successful',
-        'user' => $result['user'],
-        'token' => $result['token'],
-    ], 200);
+    return $this->authService->redirect($request);
 }
+
+public function callBack(Request $request)
+{
+    $result = $this->authService->callBack($request);
+
+    $frontendUrl = $result['frontend']; // الدومين الأصلي
+    $token = $result['token'];
+
+return redirect()->away($frontendUrl . "/google/callback?token=" . $token);
+}
+
+
+
+
+
 
 
     // تسجيل الخروج من Google
