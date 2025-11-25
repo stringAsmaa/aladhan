@@ -37,5 +37,5 @@ php artisan db:seed
 ```
 ### تشغيل الخادم المحلي
 ```bash
-php artisan serve
+php artisan serve --port=5147
 ```
