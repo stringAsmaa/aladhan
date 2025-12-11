@@ -9,3 +9,5 @@ Route::get('/', function () {
 
     // Route::get('auth/google/callback',[AuthController::class ,'callBack']);
 Route::get('/auth/google/redirect', [AuthController::class, 'redirect']);
+
+//
