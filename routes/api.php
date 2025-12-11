@@ -57,4 +57,4 @@ Route::get('/get_staticsit_zekr', [UserZekrLogController::class, 'get_staticsit_
 Route::get('/get_category_read', [UserZekrLogController::class, 'get_category_read']);
 
 });
-//
+//test
